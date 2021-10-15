@@ -1,4 +1,4 @@
-String html = \
+const char html[] PROGMEM = \
 "<html>\n"\
 "\n"\
 "<head>\n"\

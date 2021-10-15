@@ -1,17 +1,11 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #include "controller_values.h"
 #include "controller_html.h"
 
-//#ifndef PASSWORD
-//#define PASSWORD "changeme"
-//#endif
-
-ESP8266WebServer server(80);
-
-//const char *www_username = "redrobot";
-//const char *www_password = PASSWORD;
+AsyncWebServer server(80);
 
 void setup()
 {
@@ -22,7 +16,6 @@ void setup()
   Serial.print("\n\nMAC Address (Add me to CMU-DEVICE): ");
   Serial.println(WiFi.macAddress());
 
-  //  Serial.setTimeout(0);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
@@ -36,65 +29,57 @@ void setup()
     ESP.restart();
   }
 
+
   // Main route
-  server.on("/", []()
+  server.on("/", [](AsyncWebServerRequest * request)
   {
-    //    if (!server.authenticate(www_username, www_password))
-    //    {
-    //      return server.requestAuthentication();
-    //    }
-    server.send(200, "text/html", html);
+    request->send_P(200, "text/html", html);
   });
 
   // API routes
-  server.on("/update", HTTP_POST, []()
+  server.on("/update", HTTP_POST, [](AsyncWebServerRequest * request)
   {
-    //    if (!server.authenticate(www_username, www_password))
-    //    {
-    //      return server.requestAuthentication();
-    //    }
-    // Check and read request body for args x and y, error if not found
-    if (server.hasArg("x") && server.hasArg("y"))
+    if (request->hasParam("x", true) && request->hasParam("y", true))
     {
-      server.arg("x").toCharArray(joystickX, 7);
-      server.arg("y").toCharArray(joystickY, 7);
+      request->getParam("x", true)->value().toCharArray(joystickX, 7);
+      request->getParam("y", true)->value().toCharArray(joystickY, 7);
     }
-    if (server.hasArg("x2") && server.hasArg("y2"))
+    if (request->hasParam("x2", true) && request->hasParam("y2", true))
     {
-      server.arg("x2").toCharArray(joystickX2, 7);
-      server.arg("y2").toCharArray(joystickY2, 7);
+      request->getParam("x2", true)->value().toCharArray(joystickX2, 7);
+      request->getParam("y2", true)->value().toCharArray(joystickY2, 7);
     }
 
-    if (server.hasArg("btn1"))
-      btn1 = server.arg("btn1").equals("true");
-    if (server.hasArg("btn2"))
-      btn2 = server.arg("btn2").equals("true");
-    if (server.hasArg("btn3"))
-      btn3 = server.arg("btn3").equals("true");
-    if (server.hasArg("btn4"))
-      btn4 = server.arg("btn4").equals("true");
-    if (server.hasArg("btn5"))
-      btn5 = server.arg("btn5").equals("true");
-    if (server.hasArg("btn6"))
-      btn6 = server.arg("btn6").equals("true");
-    if (server.hasArg("btn7"))
-      btn7 = server.arg("btn7").equals("true");
-    if (server.hasArg("btn8"))
-      btn8 = server.arg("btn8").equals("true");
-    if (server.hasArg("btn9"))
-      btn9 = server.arg("btn9").equals("true");
-    if (server.hasArg("up1"))
-      up1 = server.arg("up1").equals("true");
-    if (server.hasArg("up2"))
-      up2 = server.arg("up2").equals("true");
-    if (server.hasArg("up3"))
-      up3 = server.arg("up3").equals("true");
-    if (server.hasArg("down1"))
-      down1 = server.arg("down1").equals("true");
-    if (server.hasArg("down2"))
-      down2 = server.arg("down2").equals("true");
-    if (server.hasArg("down3"))
-      down3 = server.arg("down3").equals("true");
+    if (request->hasParam("btn1", true))
+      btn1 = request->getParam("btn1", true)->value().equals("true");
+    if (request->hasParam("btn2", true))
+      btn2 = request->getParam("btn2", true)->value().equals("true");
+    if (request->hasParam("btn3", true))
+      btn3 = request->getParam("btn3", true)->value().equals("true");
+    if (request->hasParam("btn4", true))
+      btn4 = request->getParam("btn4", true)->value().equals("true");
+    if (request->hasParam("btn5", true))
+      btn5 = request->getParam("btn5", true)->value().equals("true");
+    if (request->hasParam("btn6", true))
+      btn6 = request->getParam("btn6", true)->value().equals("true");
+    if (request->hasParam("btn7", true))
+      btn7 = request->getParam("btn7", true)->value().equals("true");
+    if (request->hasParam("btn8", true))
+      btn8 = request->getParam("btn8", true)->value().equals("true");
+    if (request->hasParam("btn9", true))
+      btn9 = request->getParam("btn9", true)->value().equals("true");
+    if (request->hasParam("up1", true))
+      up1 = request->getParam("up1", true)->value().equals("true");
+    if (request->hasParam("up2", true))
+      up2 = request->getParam("up2", true)->value().equals("true");
+    if (request->hasParam("up3", true))
+      up3 = request->getParam("up3", true)->value().equals("true");
+    if (request->hasParam("down1", true))
+      down1 = request->getParam("down1", true)->value().equals("true");
+    if (request->hasParam("down2", true))
+      down2 = request->getParam("down2", true)->value().equals("true");
+    if (request->hasParam("down3", true))
+      down3 = request->getParam("down3", true)->value().equals("true");
 
     digitalWrite(LED_BUILTIN, (
                    btn1 || btn2 || btn3 ||
@@ -105,7 +90,7 @@ void setup()
                  ? HIGH
                  : LOW);
 
-    server.send(200, "text/plain", "OK");
+    request->send(200, "text/plain", "OK");
   });
 
   // Start server
@@ -195,12 +180,12 @@ void sendResponse() {
   }
 }
 
+//long x = micros();
 void loop()
 {
-  long x = micros();
-  server.handleClient();
   readSerial();
   if (stringComplete)
     sendResponse();
-  Serial.println(micros() - x);
+//  Serial.println(micros() - x);
+//  x = micros();
 }
