@@ -1,0 +1,322 @@
+<html>
+
+<head>
+  <title>Red Robot Controller</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+  <meta http-equiv='ScreenOrientation' content='autoRotate:disabled'>
+
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootswatch@5.1.1/dist/vapor/bootstrap.min.css'
+    integrity='sha256-UbbKcL7+3mMcL+3j6ea4Nono6ELoTCPSomY2DSK/nYA=' crossorigin='anonymous'>
+  <script src='https://code.jquery.com/jquery-3.6.0.min.js'
+    integrity='sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=' crossorigin='anonymous'></script>
+  <script src='https://cdn.jsdelivr.net/npm/nipplejs@0.9.0/dist/nipplejs.min.js'></script>
+
+  <style>
+    body {
+      touch-action: none;
+      user-select: none;
+      user-zoom: fixed;
+      pointer-events: visiblePainted;
+      -webkit-touch-callout: none;
+    }
+
+    .big-button,
+    .med-button {
+      line-height: 0;
+      transition-property: none;
+    }
+
+    .big-button {
+      font-size: 4.5vw;
+      width: 8vw;
+      height: 8vw;
+      border-radius: 2vw;
+    }
+
+    .med-button {
+      font-size: 3vw;
+      width: 6vw;
+      height: 6vw;
+      border-radius: 1.5vw;
+    }
+
+    .btn:focus,
+    .btn:active,
+    .btn:hover {
+      background-color: initial;
+    }
+
+
+    .big-shadow-primary {
+      box-shadow: 0 0 0.5em var(--bs-primary);
+    }
+
+    .big-shadow-secondary {
+      box-shadow: 0 0 0.5em var(--bs-secondary);
+    }
+
+    .big-shadow-success {
+      box-shadow: 0 0 0.5em var(--bs-success);
+    }
+
+    .big-shadow-danger {
+      box-shadow: 0 0 0.5em var(--bs-danger);
+    }
+
+    .big-shadow-info {
+      box-shadow: 0 0 0.5em var(--bs-info);
+    }
+
+    .big-shadow-warning {
+      box-shadow: 0 0 0.5em var(--bs-warning);
+    }
+
+    .big-shadow-light {
+      box-shadow: 0 0 0.5em var(--bs-light);
+    }
+
+    .big-shadow-dark {
+      box-shadow: 0 0 0.5em var(--bs-dark);
+    }
+  </style>
+</head>
+
+<body class='overflow-hidden'>
+  <div class='container-fluid h-100 w-100'>
+    <div class='row h-100'>
+      <div class='col-sm-4 h-100 d-flex'>
+        <div id='joystick' class='mx-auto my-auto position-relative'></div>
+      </div>
+      <div class='col-sm-4 h-100 d-flex'>
+        <div class='my-auto mx-auto'>
+          <div class='row align-content-start'>
+            <!-- Up/down 1 -->
+            <div class='col mx-2 px-0'>
+              <button class='btn big-button btn-outline-success text-success big-shadow-success'
+                id='up1'>&#9651;</button>
+              <div class='my-4'></div>
+              <button class='btn big-button btn-outline-success text-success big-shadow-success'
+                id='down1'>&#9661;</button>
+            </div>
+
+            <!-- Up/down 2 -->
+            <div class='col mx-2 px-0'>
+              <button class='btn big-button btn-outline-warning text-warning big-shadow-warning'
+                id='up2'>&#9651;</button>
+              <div class='my-4'></div>
+              <button class='btn big-button btn-outline-warning text-warning big-shadow-warning'
+                id='down2'>&#9661;</button>
+            </div>
+
+            <!-- Up/down 3 -->
+            <div class='col mx-2 px-0'>
+              <button class='btn big-button btn-outline-danger text-danger big-shadow-danger' id='up3'>&#9651;</button>
+              <div class='my-4'></div>
+              <button class='btn big-button btn-outline-danger text-danger big-shadow-danger'
+                id='down3'>&#9661;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='col-sm-4 h-100 d-flex align-content-center'>
+        <div id='joystick2' class='mx-auto my-auto position-relative'></div>
+        <div id='numpad-container' class='my-auto mx-auto' style='display: none;'>
+          <div class='d-flex flex-row'>
+            <div class='text-center'>
+              <button id='btn1'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>1</button>
+            </div>
+            <div class='text-center'>
+              <button id='btn2'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>2</button>
+            </div>
+            <div class='text-center'>
+              <button id='btn3'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>3</button>
+            </div>
+          </div>
+          <div class='d-flex flex-row'>
+            <div class='text-center'>
+              <button id='btn4'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>4</button>
+            </div>
+            <div class='text-center'>
+              <button id='btn5'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>5</button>
+            </div>
+            <div class='text-center'>
+              <button id='btn6'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>6</button>
+            </div>
+          </div>
+          <div class='d-flex flex-row'>
+            <div class='text-center'>
+              <button id='btn7'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>7</button>
+            </div>
+            <div class='text-center'>
+              <button id='btn8'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>8</button>
+            </div>
+            <div class='text-center'>
+              <button id='btn9'
+                class='m-1 btn med-button btn-outline-primary text-primary big-shadow-primary'>9</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='position-fixed text-center mb-4 w-100' style='bottom: 0'>
+      <button class='btn btn-outline-light' id='numpad-joystick2-toggle-btn' style='width: 5em; height: 3em;'>
+        <svg id='numpad-btn-icon' version='1.2' baseProfile='tiny' xmlns='http://www.w3.org/2000/svg' width='24'
+          height='24' viewBox='0 0 24 24'>
+          <g color='var(--bs-light)'>
+            <path stroke='none' fill='currentcolor'
+              d='M23.292 12.134c.138-.445.208-.91.208-1.384 0-2.619-2.131-4.75-4.75-4.75-1.396 0-2.685.61-3.573 1.632l-.056-.067c-.973-.974-2.349-1.533-3.776-1.533-1.422 0-2.794.556-3.77 1.525-.264-.431-.644-.813-1.122-1.108-.474-.294-1.032-.449-1.613-.449-.482 0-.955.109-1.369.316l-1.406.747c-1.442.721-2.051 2.526-1.313 4.002.272.543.714.982 1.248 1.272v4.663c0 1.654 1.346 3 3 3 .766 0 1.458-.297 1.989-.771.54.487 1.25.771 2.011.771h5c.778 0 1.479-.305 2.01-.795.796.5 1.731.795 2.74.795 2.895 0 5.25-2.355 5.25-5.25 0-.922-.25-1.825-.708-2.616zm-17.292 4.866c0 .552-.448 1-1 1s-1-.448-1-1v-6.382c-.144.072-.306.106-.471.106-.401 0-.813-.203-.988-.553-.247-.494-.031-1.095.463-1.342l1.361-.724c.141-.07.307-.105.475-.105.199 0 .4.05.561.149.294.183.599.504.599.851v8zm8 1h-5c-.404 0-.769-.244-.924-.617-.155-.374-.069-.804.217-1.09l4-4c.254-.254.394-.591.394-.95 0-.358-.14-.695-.394-.949s-.601-.381-.949-.381-.696.127-.952.382c-.252.252-.392.589-.392.948 0 .552-.448 1-1 1s-1-.448-1-1c0-.894.348-1.733.98-2.364.632-.631 1.498-.947 2.364-.947s1.731.316 2.363.948c.632.631.979 1.471.979 2.363 0 .893-.348 1.733-.979 2.364l-2.293 2.293h2.586c.552 0 1 .448 1 1s-.448 1-1 1zm4.75 0c-1.792 0-3.25-1.458-3.25-3.25 0-.552.448-1 1-1s1 .448 1 1c0 .689.561 1.25 1.25 1.25s1.25-.561 1.25-1.25-.561-1.25-1.25-1.25c-.552 0-1-.448-1-1s.448-1 1-1c.414 0 .75-.336.75-.75s-.336-.75-.75-.75c-.281 0-.536.155-.665.404-.178.343-.527.54-.889.54-.155 0-.312-.036-.459-.112-.491-.254-.682-.857-.428-1.348.475-.915 1.41-1.484 2.441-1.484 1.516 0 2.75 1.233 2.75 2.75 0 .611-.207 1.17-.545 1.627.639.594 1.045 1.434 1.045 2.373 0 1.792-1.458 3.25-3.25 3.25z' />
+          </g>
+        </svg>
+        <svg id='joystick-btn-icon' style='display: none;' version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg'
+          xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' x='0px' y='0px' viewBox='0 0 512 512'
+          style='enable-background:new 0 0 512 512;' xml:space='preserve'>
+          <g color='var(--bs-light)'>
+            <path fill='currentcolor' d='M395.669,128h-35.139c1.399-6.893,2.136-14.027,2.136-21.333C362.667,47.759,314.907,0,256,0
+				S149.333,47.759,149.333,106.667c0,7.306,0.737,14.44,2.136,21.333h-35.139C87.418,128,64,151.418,64,180.331v279.339
+				C64,488.582,87.418,512,116.331,512h279.339C424.582,512,448,488.582,448,459.669V180.331C448,151.418,424.582,128,395.669,128z
+				 M256,341.333c11.782,0,21.333-9.551,21.333-21.333v-36.946c12.75,7.377,21.333,21.153,21.333,36.946
+				c0,23.567-19.099,42.667-42.667,42.667S213.333,343.567,213.333,320c0-15.793,8.583-29.569,21.333-36.946V320
+				C234.667,331.782,244.218,341.333,256,341.333z M256,42.667c35.343,0,64,28.657,64,64c0,13.911-4.454,26.776-11.993,37.276
+				c-0.982,1.023-1.938,2.076-2.84,3.187c-9.824,12.042-23.383,20.044-38.463,22.629c-0.019,0.003-0.039,0.007-0.058,0.01
+				c-1.033,0.176-2.075,0.318-3.121,0.443c-0.166,0.019-0.329,0.045-0.495,0.063c-0.938,0.104-1.884,0.178-2.831,0.24
+				c-0.236,0.015-0.47,0.041-0.707,0.054c-1.157,0.063-2.321,0.098-3.49,0.098s-2.333-0.035-3.49-0.098
+				c-0.237-0.013-0.47-0.038-0.706-0.054c-0.948-0.063-1.895-0.136-2.834-0.24c-0.164-0.018-0.326-0.043-0.489-0.062
+				c-1.05-0.125-2.096-0.268-3.132-0.445c-0.014-0.002-0.028-0.005-0.043-0.008c-15.085-2.585-28.652-10.594-38.504-22.67
+				c-0.896-1.103-1.846-2.148-2.821-3.165C196.449,133.428,192,120.57,192,106.667C192,71.323,220.657,42.667,256,42.667z
+				 M405.333,459.669c0,5.349-4.315,9.664-9.664,9.664H116.331c-5.349,0-9.664-4.315-9.664-9.664V180.331
+				c0-5.349,4.315-9.664,9.664-9.664h50.24c2.005,0,3.897,0.636,5.447,1.766c15.343,19.565,37.373,33.633,62.649,38.765v26.158
+				c-36.807,9.472-64,42.88-64,82.645c0,47.131,38.202,85.333,85.333,85.333s85.333-38.202,85.333-85.333
+				c0-39.765-27.193-73.173-64-82.645v-26.158c25.27-5.13,47.296-19.194,62.639-38.751c1.561-1.143,3.453-1.779,5.457-1.779h50.24
+				c5.349,0,9.664,4.315,9.664,9.664V459.669z' />
+            <path fill='currentcolor' d='M192,405.333h-42.667c-11.782,0-21.333,9.551-21.333,21.333S137.551,448,149.333,448H192
+				c11.782,0,21.333-9.551,21.333-21.333S203.782,405.333,192,405.333z' />
+            <path fill='currentcolor' d='M362.667,405.333H320c-11.782,0-21.333,9.551-21.333,21.333S308.218,448,320,448h42.667
+				c11.782,0,21.333-9.551,21.333-21.333S374.449,405.333,362.667,405.333z' />
+          </g>
+        </svg>
+
+      </button>
+    </div>
+
+    <script>
+      // Create joystick
+      var joystickContainer = document.getElementById('joystick');
+      var joystick = nipplejs.create({
+        zone: joystickContainer,
+        mode: 'static',
+        position: { left: '50%', top: '50%' },
+        color: 'var(--bs-cyan)',
+        size: Math.min(joystickContainer.parentElement.offsetWidth, joystickContainer.parentElement.offsetHeight) * 0.6,
+      });
+
+      var joystickContainer2 = document.getElementById('joystick2');
+      var joystick2 = nipplejs.create({
+        zone: joystickContainer2,
+        mode: 'static',
+        position: { left: '50%', top: '50%' },
+        color: 'var(--bs-cyan)',
+        size: Math.min(joystickContainer2.parentElement.offsetWidth, joystickContainer2.parentElement.offsetHeight) * 0.6,
+      });
+
+      var nextEvent = {};
+      async function tick() {
+        if (Object.keys(nextEvent).length > 0) {
+          try {
+            cachedEvent = JSON.parse(JSON.stringify(nextEvent));
+            nextEvent = {};
+            console.log(cachedEvent);
+            await $.post('/update', cachedEvent);
+          } catch (err) {
+            console.error(err);
+          }
+        }
+        setTimeout(tick, 50);
+      }
+      tick();
+
+
+      // Bind joystick events
+      joystick.on('move', function (evt, data) {
+        var x = data.vector.x;
+        var y = data.vector.y;
+
+        nextEvent.x = x;
+        nextEvent.y = y;
+      });
+
+      joystick.on('end', function (evt, data) {
+        nextEvent.x = 0;
+        nextEvent.y = 0;
+      });
+
+      joystick2.on('move', function (evt, data) {
+        var x = data.vector.x;
+        var y = data.vector.y;
+
+        nextEvent.x2 = x;
+        nextEvent.y2 = y;
+      });
+
+      joystick2.on('end', function (evt, data) {
+        nextEvent.x2 = 0;
+        nextEvent.y2 = 0;
+      });
+
+      // Bind button events
+      function onStart(e) {
+        e.target.classList.add('btn-outline-light');
+        e.target.classList.add('big-shadow-light');
+        e.target.classList.add('text-light');
+        e.preventDefault();
+
+        var id = e.target.id;
+        nextEvent[id] = true;
+      };
+      function onEnd(e) {
+        e.target.classList.remove('btn-outline-light');
+        e.target.classList.remove('big-shadow-light');
+        e.target.classList.remove('text-light');
+        e.preventDefault();
+
+        var id = e.target.id;
+        if (id in nextEvent) {
+          delete nextEvent[id];
+        } else {
+          nextEvent[id] = false;
+        }
+      };
+
+      var buttons = document.querySelectorAll('.big-button,.med-button');
+      for (var b of buttons) {
+        b.addEventListener('touchstart', onStart);
+        b.addEventListener('mousedown', onStart);
+        b.addEventListener('touchend', onEnd);
+        b.addEventListener('mouseup', onEnd);
+      }
+
+      var showJoystick2 = true;
+      var numpad_joystick2_toggle_btn = document.getElementById('numpad-joystick2-toggle-btn');
+      var numpad_btn_icon = document.getElementById('numpad-btn-icon');
+      var joystick_btn_icon = document.getElementById('joystick-btn-icon');
+      var numpad_container = document.getElementById('numpad-container');
+      numpad_joystick2_toggle_btn.onclick = function (e) {
+        e.preventDefault();
+        showJoystick2 = !showJoystick2;
+        numpad_btn_icon.style.display = showJoystick2 ? 'inline' : 'none';
+        joystickContainer2.style.display = showJoystick2 ? 'inline' : 'none';
+
+        joystick_btn_icon.style.display = showJoystick2 ? 'none' : 'inline';
+        numpad_container.style.display = showJoystick2 ? 'none' : 'inline';
+      }
+    </script>
+</body>
+
+</html>
